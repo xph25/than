@@ -55,7 +55,7 @@ local about = UITab1:section("公告",true)
 about:Label("XinSui制作")
 about:Label("转卖死妈妈")
 about:Label("制作者XinSui")
-local about = UITab2:section("脚本",true)
+local about = UITab3:section("脚本",true)
 about:Slider("视角缩放距离", "Slider",  128, 128, 10000, false, function(Value)
     game:GetService("Players").LocalPlayer.CameraMaxZoomDistance = Value
 end)
