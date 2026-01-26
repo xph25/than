@@ -42,7 +42,7 @@ local LocalPlayer = Players.LocalPlayer
 local Camera = workspace.CurrentCamera 
 local workspace = game:GetService("Workspace")  
 local Player = Players.LocalPlayer  
-local ui = loadstring(game:HttpGet("https://raw.githubusercontent.com/mknhghv/67/refs/heads/main/UI"))()  
+local ui = loadstring(game:HttpGet("https://raw.githubusercontent.com/xph_25/67/refs/heads/main/UI"))()  
 local win = ui:new("猪挤猪中心")
 local UITab1 = win:Tab("公告",'7734068321')
 local UITab2 = win:Tab("脚本",'7734068321')
@@ -54,6 +54,7 @@ local about = UITab1:section("公告",true)
 
 about:Label("XinSui制作")
 about:Label("转卖死妈妈")
+about:Label("制作者XinSui")
 local about = UITab2:section("脚本",true)
 about:Slider("视角缩放距离", "Slider",  128, 128, 10000, false, function(Value)
     game:GetService("Players").LocalPlayer.CameraMaxZoomDistance = Value
