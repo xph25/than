@@ -2,8 +2,8 @@ local StarterGui = game:GetService("StarterGui")
 local Players = game:GetService("Players")
 local Whitelisted = {
     ["xph_25"] = true,
-    ["djbvjxvxv213"] = true,
-    ["XanYU0322"] = true,
+    ["chidia02"] = true,
+    [""] = true,
     [""] = true,
     [""] = true,
     [""] = true,
@@ -40,5 +40,5 @@ if isLocalPlayerWhitelisted then
         Duration = 7,
     })
 loadstring(game:HttpGet("https://raw.githubusercontent.com/xph25/than/refs/heads/main/%E7%8C%AA%E6%8C%A4%E7%8C%AA%E8%84%9A%E6%9C%AC"))()else
-    localPlayer:Kick("请联系作者添加白名单")
+    localPlayer:Kick("请联系XPH添加白名单")
 end
