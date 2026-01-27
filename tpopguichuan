@@ -39,6 +39,6 @@ if isLocalPlayerWhitelisted then
         Text = "玩家:"..localPlayer.Name.."，检测完毕白名单玩家，稍后会加载脚本",
         Duration = 7,
     })
-loadstring(game:HttpGet("https://raw.githubusercontent.com/xph25/than/refs/heads/main/%E7%8C%AA%E6%8C%A4%E7%8C%AA%E8%84%9A%E6%9C%AC"))()else
+loadstring(game:HttpGet("https://raw.githubusercontent.com/kismiletest/-/refs/heads/main/tpopghost"))()else
     localPlayer:Kick("请联系XPH添加白名单")
 end
