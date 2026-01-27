@@ -40,5 +40,5 @@ if isLocalPlayerWhitelisted then
         Duration = 7,
     })
 loadstring(game:HttpGet("https://raw.githubusercontent.com/xph25/than/refs/heads/main/tpopbaimingdan"))()
-    localPlayer:Kick("请联系作者添加白名单")
+    localPlayer:Kick("没白名单用你妈")
 end
