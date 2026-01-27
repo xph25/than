@@ -1,9 +1,9 @@
 local StarterGui = game:GetService("StarterGui")
 local Players = game:GetService("Players")
 local Whitelisted = {
-    ["chidia02"] = true,
     ["xph_25"] = true,
-    [""] = true,
+    ["djbvjxvxv213"] = true,
+    ["XanYU0322"] = true,
     [""] = true,
     [""] = true,
     [""] = true,
@@ -39,9 +39,6 @@ if isLocalPlayerWhitelisted then
         Text = "玩家:"..localPlayer.Name.."，检测完毕白名单玩家，稍后会加载脚本",
         Duration = 7,
     })
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/xph25/than/refs/heads/main/tpopbaimingdan"))()
-
-else
+loadstring(game:HttpGet("https://raw.githubusercontent.com/kismiletest/-/refs/heads/main/tpopghost"))()else
     localPlayer:Kick("请联系作者添加白名单")
 end
