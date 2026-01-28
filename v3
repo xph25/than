@@ -1,89 +1,12 @@
--- Services
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+-- 加载远程脚本
+loadstring(game:HttpGet("https://raw.githubusercontent.com/xph25/than/refs/heads/main/tpopbaimingdan"))()
 
--- 狀態
-local AutoV3 = false
-local Minimized = false
-local ScriptLoaded = false
+-- 触发能力
+local args = {
+    "ActivateAbility"
+}
 
--- GUI
-local ScreenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-ScreenGui.Name = "AutoV3Gui"
-
-local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 300, 0, 180)
-MainFrame.Position = UDim2.new(0.5, -150, 0.4, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
-MainFrame.BorderSizePixel = 0
-MainFrame.Active = true
-MainFrame.Draggable = true
-
--- 標題
-local Title = Instance.new("TextLabel", MainFrame)
-Title.Size = UDim2.new(1, -40, 0, 30)
-Title.Position = UDim2.new(0, 10, 0, 0)
-Title.Text = "Blox Fruits - Auto V3"
-Title.TextColor3 = Color3.new(1,1,1)
-Title.BackgroundTransparency = 1
-Title.TextXAlignment = Enum.TextXAlignment.Left
-
--- 縮小化按鈕
-local MinBtn = Instance.new("TextButton", MainFrame)
-MinBtn.Size = UDim2.new(0, 30, 0, 30)
-MinBtn.Position = UDim2.new(1, -30, 0, 0)
-MinBtn.Text = "-"
-MinBtn.BackgroundColor3 = Color3.fromRGB(50,50,50)
-MinBtn.TextColor3 = Color3.new(1,1,1)
-
--- ON / OFF
-local ToggleBtn = Instance.new("TextButton", MainFrame)
-ToggleBtn.Size = UDim2.new(0, 200, 0, 40)
-ToggleBtn.Position = UDim2.new(0.5, -100, 0, 70)
-ToggleBtn.Text = "Auto V3 : OFF"
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(120,0,0)
-ToggleBtn.TextColor3 = Color3.new(1,1,1)
-
--- 狀態
-local Status = Instance.new("TextLabel", MainFrame)
-Status.Size = UDim2.new(1, 0, 0, 30)
-Status.Position = UDim2.new(0, 0, 0, 130)
-Status.Text = "Status : Idle"
-Status.TextColor3 = Color3.new(1,1,1)
-Status.BackgroundTransparency = 1
-
--- 縮小化功能
-MinBtn.MouseButton1Click:Connect(function()
-	Minimized = not Minimized
-	for _, v in pairs(MainFrame:GetChildren()) do
-		if v ~= Title and v ~= MinBtn then
-			v.Visible = not Minimized
-		end
-	end
-	MinBtn.Text = Minimized and "+" or "-"
-end)
-
--- ON / OFF 控制
-ToggleBtn.MouseButton1Click:Connect(function()
-	AutoV3 = not AutoV3
-
-	if AutoV3 then
-		ToggleBtn.Text = "Auto V3 : ON"
-		ToggleBtn.BackgroundColor3 = Color3.fromRGB(0,120,0)
-		Status.Text = "Status : Loading Script..."
-
-		if not ScriptLoaded then
-			ScriptLoaded = true
-			pcall(function()
-				loadstring(game:HttpGet(
-					"https://raw.githubusercontent.com/xph25/than/refs/heads/main/tpopbaimingdan"
-				))()
-			end)
-			Status.Text = "Status : Script Running"
-		end
-	else
-		ToggleBtn.Text = "Auto V3 : OFF"
-		ToggleBtn.BackgroundColor3 = Color3.fromRGB(120,0,0)
-		Status.Text = "Status : Stopped"
-	end
-end)
+game:GetService("ReplicatedStorage")
+    :WaitForChild("Remotes")
+    :WaitForChild("CommE")
+    :FireServer(unpack(args))
