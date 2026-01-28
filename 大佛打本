@@ -1,0 +1,537 @@
+local v643 = 1
+local World2 = game.PlaceId == 4442272183 or game.PlaceId == 79091703265657
+local World3 = game.PlaceId == 4442272183 or game.PlaceId == 79091703265657
+_G.Settings = _G.Settings or {}
+_G.Settings.Raid = _G.Settings.Raid or {}
+_G.ToggleStates = _G.ToggleStates or {}
+_G.StopTween = false
+_G.Clip = false
+_G.Dungeon = false
+_G.CurrentRaidIsland = 0
+_G.Autofruit = false
+_G.FastAttack = true
+_G.ToggleStates["自动V4"] = true
+_G.ToggleStates["自动V3"] = false
+local AutoHakiEnabled = false
+local autoHakiTask = nil
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local Workspace = game:GetService("Workspace")
+local UserInputService = game:GetService("UserInputService")
+local LocalPlayer = Players.LocalPlayer or Players:GetLocalPlayer()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+function topos(Pos)
+    Distance = (Pos.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    if Distance < 25 then
+        Speed = 10000
+    elseif Distance < 50 then
+        Speed = 2000
+    elseif Distance < 150 then
+        Speed = 800
+    elseif Distance < 250 then
+        Speed = 600
+    elseif Distance < 500 then
+        Speed = 400
+    elseif Distance < 750 then
+        Speed = 300
+    elseif Distance >= 1000 then
+        Speed = 300
+    end
+    game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),
+        {CFrame = Pos}
+    ):Play()
+end
+function StopTween(target)
+    if not target then
+        _G.StopTween = true
+        wait()
+        topos(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
+        wait()
+        if game.Players.LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
+            game.Players.LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip"):Destroy()
+        end
+        _G.StopTween = false
+        _G.Clip = false
+    end
+    if game.Players.LocalPlayer.Character:FindFirstChild('Highlight') then
+        game.Players.LocalPlayer.Character:FindFirstChild('Highlight'):Destroy()
+    end
+end
+
+local function GetNearestIsland(islandNum)
+    local locations = workspace._WorldOrigin.Locations
+    local targetIslandName = "Island " .. islandNum
+    local targetIsland = locations:FindFirstChild(targetIslandName)
+    if not targetIsland then return nil end
+
+    local localPlayer = game.Players.LocalPlayer
+    local character = localPlayer.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then return nil end
+    local playerHRP = character.HumanoidRootPart
+
+    local nearestDist = 4500
+    local nearestIsland = nil
+    for _, child in ipairs(locations:GetChildren()) do
+        if child.Name == targetIslandName then
+            local dist = (child.Position - playerHRP.Position).Magnitude
+            if dist < nearestDist then
+                nearestDist = dist
+                nearestIsland = child
+            end
+        end
+    end
+    return nearestIsland
+end
+local function GetAvailableIsland()
+    local localPlayer = game.Players.LocalPlayer
+    local character = localPlayer.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then return nil end
+    local playerHRP = character.HumanoidRootPart
+
+    for _, num in ipairs({5,4,3,2,1}) do
+        if num > _G.CurrentRaidIsland then
+            local island = GetNearestIsland(num)
+            if island then
+                local dist = (island.Position - playerHRP.Position).Magnitude
+                if dist <= 4500 then
+                    return island, num
+                end
+            end
+        end
+    end
+    _G.CurrentRaidIsland = 0
+    return nil, 0
+end
+
+local vu616 = loadstring(game:HttpGet("https://raw.githubusercontent.com/farehamhz/RedzLib/main/RedzLib"))():MakeWindow({
+    Title = "大佛打本👿",
+    SubTitle = "by XinSui",
+    SaveFolder = ""
+})
+local v617 = Instance.new("ScreenGui", game.CoreGui)
+v617.Name = "ControlGUI"
+local vu618 = Instance.new("ImageButton", v617)
+vu618.Size = UDim2.new(0, 35, 0, 35)
+vu618.Position = UDim2.new(0.15, 0, 0.15, 0)
+vu618.Image = "rbxassetid://80424431930361"
+vu618.BackgroundTransparency = 1
+local v619 = Instance.new("UICorner", vu618)
+v619.CornerRadius = UDim.new(0.25, 0)
+local vu620 = true
+local vu621, vu622, vu623, vu624 = nil, nil, nil, nil
+local function vu627(p625)
+    local v626 = p625.Position - vu623
+    vu618.Position = UDim2.new(vu624.X.Scale, vu624.X.Offset + v626.X, vu624.Y.Scale, vu624.Y.Offset + v626.Y)
+end
+vu618.InputBegan:Connect(function(pu628)
+    if pu628.UserInputType == Enum.UserInputType.Touch or pu628.UserInputType == Enum.MouseButton1 then
+        vu621 = true
+        vu623 = pu628.Position
+        vu624 = vu618.Position
+    end
+end)
+vu618.InputChanged:Connect(function(p629)
+    if p629.UserInputType == Enum.UserInputType.Touch or p629.UserInputType == Enum.MouseMovement then
+        vu622 = p629
+    end
+end)
+UserInputService.InputChanged:Connect(function(p630)
+    if vu621 and p630 == vu622 then
+        vu627(p630)
+    end
+end)
+vu618.MouseButton1Click:Connect(function()
+    vu620 = not vu620
+    vu616:Minimize(not vu620)
+end)
+
+local v644 = vu616.MakeTab(v643, {"Raid Fruits", "cherry"})
+v644:AddSection({"打本"})
+v644:AddDropdown({
+    Name = "选择买票",
+    Options = {"Flame","Ice","Sand","Dark","Light","Magma","Quake","Buddha","Spider","Phoenix","Lightning","Dough"},
+    Default = "Flame",
+    Callback = function(val) _G.SelectChip = val end
+})
+v644:AddToggle({
+    Name = "自动买票",
+    Default = false,
+    Callback = function(val) _G.AutoBuyChip = val end
+})
+v644:AddToggle({
+    Name = "自动开始袭击",
+    Default = false,
+    Callback = function(val) _G.Settings.Raid["Auto Raid"] = val end
+})
+v644:AddToggle({
+    ["Name"] = "自动前往下一个岛屿",
+    ["Description"] = "",
+    ["Default"] = false,
+    ["Callback"] = function(p1320)
+        _G.Dungeon = p1320
+        _G.CurrentRaidIsland = 0
+    end
+})
+v644:AddToggle({
+    ["Name"] = "自动拿出果实",
+    ["Description"] = "",
+    ["Default"] = false,
+    ["Callback"] = function(p1347)
+        _G.Autofruit = p1347
+    end
+})
+v644:AddToggle({
+    ["Name"] = "自动V4",
+    ["Description"] = "",
+    ["Default"] = true,
+    ["Callback"] = function(p1348)
+        _G.ToggleStates["自动V4"] = p1348
+        if autoV4Task then task.cancel(autoV4Task) autoV4Task = nil end
+        if p1348 then startAutoV4Loop() end
+    end
+})
+v644:AddToggle({
+    ["Name"] = "自动V3",
+    ["Description"] = "",
+    ["Default"] = false,
+    ["Callback"] = function(p1349)
+        _G.ToggleStates["自动V3"] = p1349
+        if autoV3Task then task.cancel(autoV3Task) autoV3Task = nil end
+        if p1349 then
+            autoV3Task = task.spawn(function()
+                while _G.ToggleStates["自动V3"] do
+                    callRaceV3Remote()
+                    task.wait(1)
+                end
+                autoV3Task = nil
+            end)
+        end
+    end
+})
+v644:AddToggle({
+    ["Name"] = "快速攻击",
+    ["Description"] = "",
+    ["Default"] = true,
+    ["Callback"] = function(p1350)
+        if _ENV.rz_FastAttack then
+            _ENV.rz_FastAttack.IsRunning = p1350
+            _G.FastAttack = p1350
+        end
+    end
+})
+v644:AddToggle({
+    ["Name"] = "自动武装色",
+    ["Description"] = "",
+    ["Default"] = true,
+    ["Callback"] = function(state)
+        AutoHakiEnabled = state
+        if state then
+            startAutoHakiLoop()
+        else
+            if autoHakiTask then
+                task.cancel(autoHakiTask)
+                autoHakiTask = nil
+            end
+        end
+    end
+})
+
+local autoV4Task = nil
+local function callAwakeningRemote()
+    local character = LocalPlayer.Character
+    if not character then return end
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid or humanoid.Health <= 0 then return end
+    local Backpack = LocalPlayer:FindFirstChild("Backpack")
+    if not Backpack then return end
+    local Awakening = Backpack:FindFirstChild("Awakening")
+    if not Awakening then return end
+    local RemoteFunc = Awakening:FindFirstChild("RemoteFunction")
+    if not RemoteFunc then return end
+    pcall(function()
+        RemoteFunc:InvokeServer(true)
+    end)
+end
+local function startAutoV4Loop()
+    if autoV4Task then task.cancel(autoV4Task) end
+    autoV4Task = task.spawn(function()
+        while _G.ToggleStates["自动V4"] do
+            pcall(callAwakeningRemote)
+            task.wait(1)
+        end
+        autoV4Task = nil
+    end)
+end
+task.spawn(function()
+    while not LocalPlayer.Character do task.wait(0.5) end
+    if _G.ToggleStates["自动V4"] then startAutoV4Loop() end
+end)
+
+local autoV3Task = nil
+local function callRaceV3Remote()
+    local Remotes = ReplicatedStorage:FindFirstChild("Remotes")
+    if not Remotes then return end
+    local CommE = Remotes:FindFirstChild("CommE")
+    if not CommE then return end
+    pcall(function()
+        CommE:FireServer("ActivateAbility")
+    end)
+end
+
+local function startAutoHakiLoop()
+    if autoHakiTask then
+        task.cancel(autoHakiTask)
+        autoHakiTask = nil
+    end
+    autoHakiTask = task.spawn(function()
+        while AutoHakiEnabled do
+            task.wait(0.2)
+            if AutoHakiEnabled and LocalPlayer.Character and not LocalPlayer.Character:FindFirstChild("HasBuso") then
+                pcall(function()
+                    ReplicatedStorage.Remotes.CommF_:InvokeServer("Buso")
+                end)
+            end
+        end
+        autoHakiTask = nil
+    end)
+end
+
+LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+    task.wait(2)
+    if AutoHakiEnabled then
+        startAutoHakiLoop()
+    end
+    if _G.ToggleStates["自动V4"] then
+        startAutoV4Loop()
+    end
+    if _G.ToggleStates["自动V3"] and not autoV3Task then
+        autoV3Task = task.spawn(function()
+            while _G.ToggleStates["自动V3"] do
+                callRaceV3Remote()
+                task.wait(1)
+            end
+            autoV3Task = nil
+        end)
+    end
+end)
+
+AutoHakiEnabled = true
+startAutoHakiLoop()
+
+local _ENV = (getgenv or getrenv or getfenv)()
+local Settings = {AutoClick = true, ClickDelay = 0.3}
+local FastAttackModule = (function()
+    if _ENV.rz_FastAttack then return _ENV.rz_FastAttack end
+    local FastAttack = {
+        Distance = 2500,
+        attackMobs = true,
+        attackPlayers = true,
+        Equipped = nil,
+        IsRunning = _G.FastAttack,
+        consecutiveFailures = 0,
+        maxConsecutiveFailures = 5
+    }
+    local function ProcessEnemies(OthersEnemies, Folder)
+        if not Folder or not FastAttack.attackMobs then return nil end
+        local BasePart = nil
+        for _, Enemy in Folder:GetChildren() do
+            if Enemy == LocalPlayer.Character then continue end
+            local humanoid = Enemy:FindFirstChildOfClass("Humanoid")
+            if not humanoid or humanoid.Health <= 0 then continue end
+            local foundPart = Enemy:FindFirstChild("HumanoidRootPart") or Enemy:FindFirstChildWhichIsA("BasePart")
+            if foundPart and LocalPlayer:DistanceFromCharacter(foundPart.Position) < FastAttack.Distance then
+                table.insert(OthersEnemies, {Enemy, foundPart})
+                BasePart = foundPart
+            end
+        end
+        return BasePart
+    end
+    local function ProcessRealPlayers(OthersEnemies)
+        if not FastAttack.attackPlayers then return nil end
+        local BasePart = nil
+        for _, OtherPlayer in Players:GetPlayers() do
+            if OtherPlayer == LocalPlayer then continue end
+            local OtherChar = OtherPlayer.Character
+            if not OtherChar then continue end
+            local humanoid = OtherChar:FindFirstChildOfClass("Humanoid")
+            if not humanoid or humanoid.Health <= 0 then continue end
+            local foundPart = OtherChar:FindFirstChild("HumanoidRootPart") or OtherChar:FindFirstChildWhichIsA("BasePart")
+            if foundPart and LocalPlayer:DistanceFromCharacter(foundPart.Position) < FastAttack.Distance then
+                table.insert(OthersEnemies, {OtherChar, foundPart})
+                BasePart = foundPart
+            end
+        end
+        return BasePart
+    end
+    function FastAttack:AttackNearest()
+        if not self.IsRunning then return end
+        local OthersEnemies = {}
+        local Enemies = Workspace:FindFirstChild("Enemies")
+        local Part1 = Enemies and ProcessEnemies(OthersEnemies, Enemies)
+        local Part2 = ProcessRealPlayers(OthersEnemies)
+        if #OthersEnemies > 0 then
+            local targetPart = Part1 or Part2
+            if targetPart then
+                local Remotes = ReplicatedStorage:FindFirstChild("Remotes")
+                if Remotes then
+                    local Modules = ReplicatedStorage:FindFirstChild("Modules")
+                    local Net = Modules and Modules:FindFirstChild("Net")
+                    local RegisterAttack = Net and Net:FindFirstChild("RE/RegisterAttack")
+                    local RegisterHit = Net and Net:FindFirstChild("RE/RegisterHit")
+                    if RegisterAttack and RegisterHit then
+                        RegisterAttack:FireServer(Settings.ClickDelay or 0)
+                        RegisterHit:FireServer(targetPart, OthersEnemies)
+                    end
+                end
+            end
+        end
+    end
+    function FastAttack:BladeHits()
+        if not self.IsRunning then return end
+        local Equipped = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Tool")
+        if Equipped then
+            self:AttackNearest()
+        end
+    end
+    task.spawn(function()
+        while true do
+            task.wait(Settings.ClickDelay)
+            if Settings.AutoClick and FastAttack.IsRunning then
+                FastAttack:BladeHits()
+            else
+                task.wait(0.1)
+            end
+        end
+    end)
+    _ENV.rz_FastAttack = FastAttack
+    return FastAttack
+end)()
+
+local function HasFruitInBackpack()
+    local Backpack = LocalPlayer:FindFirstChild("Backpack")
+    if not Backpack then return false end
+    local fruitPattern = " Fruit$"
+    for _, item in ipairs(Backpack:GetChildren()) do
+        if item:IsA("Tool") and string.match(item.Name, fruitPattern) then
+            return true
+        end
+    end
+    local Character = LocalPlayer.Character
+    if Character then
+        for _, item in ipairs(Character:GetChildren()) do
+            if item:IsA("Tool") and string.match(item.Name, fruitPattern) then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+local CommF_Remote = nil
+task.spawn(function()
+    while not CommF_Remote do
+        CommF_Remote = ReplicatedStorage:FindFirstChild("Remotes") and ReplicatedStorage.Remotes:FindFirstChild("CommF_")
+        task.wait(0.5)
+    end
+end)
+
+spawn(function()
+    while task.wait(1) do
+        pcall(function()
+            if _G.AutoBuyChip and _G.SelectChip and (World2 or World3) then
+                local remote = ReplicatedStorage:FindFirstChild("Remotes") and ReplicatedStorage.Remotes:FindFirstChild("CommF_")
+                if remote then
+                    remote:InvokeServer("RaidsNpc", "Select", _G.SelectChip)
+                end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait(0.2) do
+        pcall(function()
+            if not (_G.Settings.Raid["Auto Raid"] and (World2 or World3)) then return end
+            local RaidTimer = LocalPlayer.PlayerGui:FindFirstChild("Main") and
+                              LocalPlayer.PlayerGui.Main:FindFirstChild("TopHUDList") and
+                              LocalPlayer.PlayerGui.Main.TopHUDList:FindFirstChild("RaidTimer")
+            if not RaidTimer or RaidTimer.Visible then return end
+            local HasChip = LocalPlayer.Backpack:FindFirstChild("Special Microchip") or
+                           (LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Special Microchip"))
+            if not HasChip then return end
+            local RaidIsland1 = Workspace.Map:FindFirstChild("RaidMap") and Workspace.Map.RaidMap:FindFirstChild("RaidIsland1")
+            if RaidIsland1 then return end
+            if World2 then
+                local CD = Workspace.Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector
+                if CD then fireclickdetector(CD) end
+            elseif World3 then
+                local remote = ReplicatedStorage:FindFirstChild("Remotes") and ReplicatedStorage.Remotes:FindFirstChild("CommF_")
+                if remote then
+                    remote:InvokeServer("requestEntrance", Vector3.new(-5083.26, 314.61, -3175.67))
+                end
+                local CD = Workspace.Map["Boat Castle"].RaidSummon2.Button.Main.ClickDetector
+                if CD then fireclickdetector(CD) end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while true do
+        task.wait()
+        if _G.Dungeon then
+            local localPlayer = game.Players.LocalPlayer
+            local character = localPlayer.Character
+            if not character or not character:FindFirstChild("HumanoidRootPart") then continue end
+            local targetIsland, islandNum = GetAvailableIsland()
+            if targetIsland and islandNum then
+                local teleportCFrame = targetIsland.CFrame * CFrame.new(0, 300, 0)
+                topos(teleportCFrame)
+                _G.CurrentRaidIsland = islandNum
+            end
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        if _G.Dungeon then
+            vu1346()
+            if vu1336() then
+                topos(vu1336().CFrame * CFrame.new(0, 300, 0))
+            end
+        end
+    end
+end)
+
+spawn(function()
+    local FruitList = {
+        "Rocket-Rocket", "Spin-Spin", "Chop-Chop", "Spring-Spring", "Bomb-Bomb",
+        "Smoke-Smoke", "Spike-Spike", "Flame-Flame", "Falcon-Falcon", "Ice-Ice",
+        "Sand-Sand", "Dark-Dark", "Ghost-Ghost", "Diamond-Diamond", "Light-Light",
+        "Rubber-Rubber", "Creation-Creation"
+    }
+    local currentFruitIndex = 1
+    while task.wait(0.3) do
+        pcall(function()
+            if not _G.Autofruit or HasFruitInBackpack() or not CommF_Remote then
+                currentFruitIndex = 1
+                return
+            end
+
+            local currentFruit = FruitList[currentFruitIndex]
+            pcall(function()
+                CommF_Remote:InvokeServer("LoadFruit", currentFruit)
+            end)
+
+            currentFruitIndex = currentFruitIndex + 1
+            if currentFruitIndex > #FruitList then
+                currentFruitIndex = 1
+            end
+        end)
+    end
+end)
