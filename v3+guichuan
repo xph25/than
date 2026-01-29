@@ -1,0 +1,233 @@
+-- =============================
+-- 服务
+-- =============================
+local Players = game:GetService("Players")
+本地 RunService = 游戏:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+本地玩家 = Players.LocalPlayer
+
+-- =============================
+-- 状态变数
+-- =============================
+local AutoAttack = false
+本地攻击距离 = 20
+local AbilityLoop = false
+local LavaRemoved = false
+
+-- =============================
+-- 角色 / HRP
+-- =============================
+本地函数 getHRP()
+    local char = player.Character or player.CharacterAdded:Wait()
+    返回 char:WaitForChild("HumanoidRootPart")
+结尾
+
+-- =============================
+-- 鬼船 Lava 移除（只执行一次）
+-- =============================
+task.spawn(function()
+    虽然没有移除熔岩
+        local map = workspace:FindFirstChild("Map")
+        local gsi = map and map:FindFirstChild("GhostShipInterior")
+        local lava = gsi and gsi:FindFirstChild("LavaParts") and gsi.LavaParts:FindFirstChild("Lava")
+
+        如果是熔岩的话
+            lava:Destroy()
+            熔岩移除 = true
+            warn("🔥 幽灵船熔岩已移除")
+        结尾
+        task.wait(1)
+    结尾
+结尾）
+
+-- =============================
+-- 清旧 GUI
+-- =============================
+如果 player.PlayerGui:FindFirstChild("AutoAttackGUI") 则
+    player.PlayerGui.AutoAttackGUI:Destroy()
+结尾
+
+-- =============================
+-- 图形用户界面
+-- =============================
+local gui = Instance.new("ScreenGui")
+gui.Name = "自动攻击GUI"
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = player.PlayerGui
+
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0,280,0,300)
+main.Position = UDim2.new(0.5,-140,0.5,-150)
+main.BackgroundColor3 = Color3.fromRGB(30,30,30)
+main.BorderSizePixel = 0
+main.ZIndex = 2
+main.Parent = gui
+
+-- =============================
+-- 拖曳（取代Draggable）
+-- =============================
+做
+    本地拖动、拖动开始、起始位置
+
+    main.InputBegan:Connect(function(input)
+        如果 input.UserInputType == Enum.UserInputType.MouseButton1 那么
+            拖拽 = 真
+            dragStart = input.Position
+            startPos = main.Position
+        结尾
+    结尾）
+
+    UserInputService.InputChanged:Connect(function(input)
+        如果正在拖动且 input.UserInputType == Enum.UserInputType.MouseMovement 则
+            local delta = input.Position - dragStart
+            main.Position = UDim2.new(
+                startPos.X.Scale，
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale，
+                startPos.Y.Offset + delta.Y
+            ）
+        结尾
+    结尾）
+
+    UserInputService.InputEnded:Connect(function(input)
+        如果 input.UserInputType == Enum.UserInputType.MouseButton1 那么
+            拖拽 = false
+        结尾
+    结尾）
+结尾
+
+-- =============================
+-- 标题列
+-- =============================
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1,0,0,30)
+title.BackgroundColor3 = Color3.fromRGB(45,45,45)
+title.Text = "幽灵船枢纽"
+title.TextColor3 = Color3.new(1,1,1)
+标题.文本大小 = 18
+title.ZIndex = 3
+标题.父级 = 主
+
+-- 关闭
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0,30,0,30)
+closeBtn.Position = UDim2.new(1,-30,0,0)
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.fromRGB(255,80,80)
+closeBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+closeBtn.ZIndex = 4
+关闭按钮的父级 = 主级
+closeBtn.MouseButton1Click:Connect(function()
+    gui:Destroy()
+结尾）
+
+-- 最小化
+local miniBtn = Instance.new("TextButton")
+miniBtn.Size = UDim2.new(0,30,0,30)
+miniBtn.Position = UDim2.new(1,-60,0,0)
+miniBtn.Text = "-"
+miniBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+miniBtn.TextColor3 = Color3.new(1,1,1)
+miniBtn.ZIndex = 4
+miniBtn.Parent = main
+
+本地内容 = Instance.new("Frame")
+content.Size = UDim2.new(1,-20,1,-40)
+content.Position = UDim2.new(0,10,0,35)
+content.BackgroundTransparency = 1
+content.Parent = main
+
+局部最小化 = false
+miniBtn.MouseButton1Click:Connect(function()
+    最小化 = 未最小化
+    内容可见 = 未最小化
+    miniBtn.Text = 最小化且“+”或“-”
+    main.Size = minimized 且 UDim2.new(0,280,0,30) 或 UDim2.new(0,280,0,300)
+结尾）
+
+-- =============================
+-- 自动攻击
+-- =============================
+local attackBtn = Instance.new("TextButton")
+attackBtn.Size = UDim2.new(1,0,0,32)
+AttackBtn.Text = "自动攻击：关闭"
+attackBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
+attackBtn.TextColor3 = Color3.new(1,1,1)
+attackBtn.Parent = 内容
+
+attackBtn.MouseButton1Click:Connect(function()
+    自动攻击 = 非自动攻击
+    AttackBtn.Text = AutoAttack and "自动攻击：开启" 或 "自动攻击：关闭"
+结尾）
+
+-- =============================
+-- v3 能力（单一循环）
+-- =============================
+local v3Btn = Instance.new("TextButton")
+v3Btn.Size = UDim2.new(1,0,0,32)
+v3Btn.Position = UDim2.new(0,0,0,40)
+v3Btn.Text = "v3能力：关闭"
+v3Btn.BackgroundColor3 = Color3.fromRGB(90,60,120)
+v3Btn.TextColor3 = Color3.new(1,1,1)
+v3Btn.Parent = 内容
+
+task.spawn(function()
+    虽然确实如此
+        如果 AbilityLoop 则
+            pcall(function()
+                ReplicatedStorage.Remotes.CommE:FireServer("ActivateAbility")
+            结尾）
+        结尾
+        task.wait(0.15)
+    结尾
+结尾）
+
+v3Btn.MouseButton1Click:Connect(function()
+    AbilityLoop = 非 AbilityLoop
+    v3Btn.Text=AbilityLoop and "v3能力：开启" 或 "v3能力：关闭"
+结尾）
+
+-- =============================
+——传送
+-- =============================
+局部函数 tp(pos)
+    local hrp = getHRP()
+    hrp.CFrame = CFrame.new(pos)
+结尾
+
+local ghostBtn = Instance.new("TextButton")
+ghostBtn.Size = UDim2.new(1,0,0,32)
+ghostBtn.Position = UDim2.new(0,0,0,80)
+GhostBtn.Text = "传送：ゆうれい"
+ghostBtn.BackgroundColor3 = Color3.fromRGB(0,170,255)
+ghostBtn.TextColor3 = Color3.new(1,1,1)
+ghostBtn.Parent = 内容
+ghostBtn.MouseButton1Click:Connect(function()
+    tp(Vector3.new(938,249,32888))
+结尾）
+
+local beanBtn = Instance.new("TextButton")
+beanBtn.Size = UDim2.new(1,0,0,32)
+beanBtn.Position = UDim2.new(0,0,0,120)
+beanBtn.Text = "传送：まめつぶぐみ"
+beanBtn.BackgroundColor3 = Color3.fromRGB(255,50,0)
+beanBtn.TextColor3 = Color3.new(1,1,1)
+beanBtn.Parent = 内容
+beanBtn.MouseButton1Click:Connect(function()
+    tp(Vector3.new(2284,15,911))
+结尾）
+
+-- =============================
+-- 自动攻击主循环（模板）
+-- =============================
+task.spawn(function()
+    while task.wait(0.25) do
+        如果启用自动攻击
+            -- 这里可接你具体的击打/战斗远程
+            --目前只保持稳定循环
+        结尾
+    结尾
+结尾）
