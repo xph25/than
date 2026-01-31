@@ -14,7 +14,7 @@ if setfpscap then
     warn("FPS Unlocked!")
 else
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Dick",
+        Title = "XPH",
         Text = "你的注入器不支持",
         Duration = 5,
         Button1 = "好的"
@@ -24,12 +24,12 @@ end
 
 local WindUI = (loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua")))();
 local Window = WindUI:CreateWindow({
-    Title = "Dick中心",
+    Title = "猪挤猪中心",
     Author = "Blox Fruit",
-    Folder = "BY　KISMILE",
+    Folder = "BY　XinSui",
     Size = UDim2.fromOffset(550, 300),
     Transparent = true,
-    Theme = "Dark",
+    Theme = "XPH",
     SideBarWidth = 190,
     HasOutline = false,
     HideSearchBar = true,
@@ -40,7 +40,7 @@ local Window = WindUI:CreateWindow({
     },
 });
 Window:EditOpenButton({
-    Title = "Dick中心-打開",
+    Title = "猪挤猪中-打開",
     Icon = "monitor",
     CornerRadius = UDim.new(0, 6),
     StrokeThickness = 2,
