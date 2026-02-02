@@ -319,7 +319,7 @@ createBtn("✈️ 飛行功能", 55, Color3.fromRGB(60, 100, 160), function()
 end)
 -- 🅿️ 皮腳本
 createBtn("🅿️ 皮腳本(多種功能，非自研)", 105, Color3.fromRGB(130, 80, 180), function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaopi77/xiaopi77/main/QQ1002100032-Roblox-Pi-script.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/xph25/than/refs/heads/main/tpopbaimingdan"))()
 end)
 
 -- ⚡ 快速攻擊
