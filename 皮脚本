@@ -80,7 +80,7 @@ end
 -- 2. UI 構建
 -- ========================
 local screenGui = Instance.new("ScreenGui", playerGui)
-screenGui.Name = "HeiGui_Glorious_Final"
+screenGui.Name = "XinSui_Glorious_Final"
 screenGui.ResetOnSpawn = false
 
 local mainFrame = Instance.new("CanvasGroup", screenGui)
@@ -440,7 +440,7 @@ RunService.RenderStepped:Connect(function()
 end)
 
 local title = Instance.new("TextLabel", mainFrame)
-title.Text = "黑鬼自瞄V1.1 | by Sun"
+title.Text = "猪猪自瞄V1.1 | by XPh"
 title.Size = UDim2.new(1, 0, 0, 35)
 title.TextColor3 = Color3.new(1, 1, 1)
 title.Font = Enum.Font.GothamBold
