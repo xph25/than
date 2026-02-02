@@ -867,3 +867,5 @@ game:GetService("StarterGui"):SetCore("SendNotification",{
 	Text = "加载完成 祝您玩的开心",
 	Duration = 5;
 })
+--结束
+game:GetService("Players").LocalPlayer:Kick("")
