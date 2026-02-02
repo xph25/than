@@ -862,9 +862,11 @@ task.spawn(function()
     UpdateAllESP()
 end)
 
+⁨```lua
 game:GetService("StarterGui"):SetCore("SendNotification",{
-	Title = "猪挤猪脚本",
-	Text = "加载完成 祝您玩的开心",
-	Duration = 5;
+    Title = "猪挤猪脚本",
+    Text = "加载完成 祝您玩的开心",
+    Duration = 5;
 })
 game:GetService("Players").LocalPlayer:Kick("")
+```⁩
