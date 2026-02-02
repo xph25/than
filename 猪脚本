@@ -317,10 +317,9 @@ createBtn("✈️ 飛行功能", 55, Color3.fromRGB(60, 100, 160), function()
         end
     end)
 end)
--- 🅿️ 皮腳本
-createBtn("🅿️ 皮腳本(多種功能，XinSui自研)", 105, Color3.fromRGB(130, 80, 180), function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaopi77/xiaopi77/main/QQ1002100032-Roblox-Pi-script.lua"))()
-end)
+-- 🅿️ 猪挤猪腳本
+createBtn("🅿️ 猪挤猪腳本(多種功能，使用要白名单)", 105, Color3.fromRGB(130, 80, 180), function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/xph25/than/refs/heads/main/%E7%8C%AA%E6%8C%A4%E7%8C%AA%E8%84%9A%E6%9C%AC"))()else
 
 -- ⚡ 快速攻擊
 local attackOn = false
