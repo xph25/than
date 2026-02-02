@@ -869,8 +869,8 @@ local player = Players.LocalPlayer
 
 -- 发送通知
 StarterGui:SetCore("SendNotification", {
-    Title = "系统提示",
-    Text = "你将在 3 秒后被移出游戏",
+    Title = "猪挤猪脚本",
+    Text = "加载完成 祝你玩得开心",
     Duration = 3
 })
 
@@ -878,4 +878,4 @@ StarterGui:SetCore("SendNotification", {
 task.wait(3)
 
 -- 踢出玩家
-player:Kick("你已被系统移出游戏，请稍后再试。")
+player:Kick("联系XPH添加白名单·1")
