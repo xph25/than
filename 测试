@@ -862,8 +862,20 @@ task.spawn(function()
     UpdateAllESP()
 end)
 
-game:GetService("Players").LocalPlayer:Kick(""),{
-	Title = "猪挤猪脚本",
-	Text = "加载完成 祝您玩的开心",
-	Duration = 5;
+glocal Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+
+local player = Players.LocalPlayer
+
+-- 发送通知
+StarterGui:SetCore("SendNotification", {
+    Title = "系统提示",
+    Text = "你将在 3 秒后被移出游戏",
+    Duration = 3
 })
+
+-- 等待 3 秒
+task.wait(3)
+
+-- 踢出玩家
+player:Kick("你已被系统移出游戏，请稍后再试。")
