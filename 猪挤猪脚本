@@ -127,7 +127,7 @@ about:Button("redz",function()
 end)
 
 about:Button("皮脚本",function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaoxuan-77/-/refs/heads/main/皮"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/xph25/than/refs/heads/main/%E7%9A%AE%E8%84%9A%E6%9C%AC"))()
 end)
 
 local VirtualUser = game:GetService("VirtualUser")
