@@ -115,7 +115,7 @@ end)
 -- 缝合
 
 about:Button("飞行",function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaoxuan-77/-/refs/heads/main/fly"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/xph25/than/refs/heads/main/%E9%A3%9E%E8%A1%8C"))()
 end)
 
 about:Button("法天象地",function()
