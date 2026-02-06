@@ -118,8 +118,8 @@ about:Button("飞行",function()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/xph25/than/refs/heads/main/%E9%A3%9E%E8%A1%8C"))()
 end)
 
-about:Button("法天象地",function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaoxuan-77/-/refs/heads/main/法天像地"))()
+about:Button("鬼船v3",function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/xph25/than/refs/heads/main/v3%2Bguichuan"))()
 end)
 
 about:Button("redz",function()
