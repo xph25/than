@@ -18,3 +18,13 @@ old = hookmetamethod(game:GetService("StarterGui"), "__namecall", newcclosure(fu
      return old(self, ...)
 end))
 
+
+local main = require(game:GetService("ReplicatedStorage").Util.CameraShaker.Main)
+local returnnil = function() return nil end
+
+main.StartShake = returnnil
+main.ShakeOnce = returnnil
+main.ShakeSustain = returnnil
+main.CameraShakeInstance = returnnil
+main.Shake = returnnil
+main.Start = returnnil
